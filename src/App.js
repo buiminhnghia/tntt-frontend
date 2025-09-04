@@ -6,7 +6,9 @@ function App() {
   const [error, setError] = useState(null);
   const [newName, setNewName] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [date, setDate] = useState("");
+  const [telephone, setTelephone] = useState("");
+  const [managerName, setManagerName] = useState("");
   const API_BASE = "https://tntt-web.onrender.com"; // backend Render API
 
   // Lấy dữ liệu ban đầu
@@ -33,42 +35,47 @@ function App() {
 
   // Thêm dữ liệu mới
   const handleAdd = () => {
-    if (!newName.trim()) {
-      setError("Tên không được rỗng");
-      return;
-    }
+  if (!newName.trim() || !date.trim() || !telephone.trim() || !managerName.trim()) {
+    setError("Vui lòng nhập đầy đủ tên, ngày và số điện thoại");
+    return;
+  }
 
-    setLoading(true);
-    axios
-      .post(`${API_BASE}/`, { name: newName })
-      .then((res) => {
-        // Backend trả về trực tiếp { id, name, qr_code_img }
-        const newRow = {
-          id: res.data.id,
-          name: res.data.name,
-          qr_code_img: res.data.qr_code_img,
-        };
+  setLoading(true);
+  axios
+    .post(`${API_BASE}/`, {
+      name: newName,
+      date: date,
+      telephone: telephone,
+      manager_name: managerName,
+    })
+    .then((res) => {
+      const newRow = res.data; // backend trả về cả row {id, name, date, telephone, qr_code_img}
+      setRows((prev) => [...prev, newRow]);
 
-        setRows((prev) => [...prev, newRow]);
-        setNewName("");
-        setError(null);
-      })
-      .catch((err) => {
-        console.error("Lỗi insert:", err);
-        setError("Không thể thêm dữ liệu");
-      })
-      .finally(() => setLoading(false));
-  };
+      // reset form
+      setNewName("");
+      setDate("");
+      setTelephone("");
+      setManagerName("");
+      setError(null);
+    })
+    .catch((err) => {
+      console.error("Lỗi insert:", err);
+      setError("Không thể thêm dữ liệu");
+    })
+    .finally(() => setLoading(false));
+};
+
 
   return (
     <div
       style={{
         padding: "32px",
-        maxWidth: "600px",
+        maxWidth: "800px",
         margin: "40px auto",
-        background: "#fff",
-        borderRadius: "12px",
-        boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
+        background: "#f4f6fb",
+        borderRadius: "18px",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
         fontFamily: "Segoe UI, Arial, sans-serif",
       }}
     >
@@ -76,10 +83,12 @@ function App() {
         style={{
           textAlign: "center",
           color: "#1976d2",
-          marginBottom: "24px",
+          marginBottom: "32px",
+          fontWeight: 700,
+          letterSpacing: "1px",
         }}
       >
-        Dữ liệu + QR Code
+        Quản Lý Thiếu Nhi & QR Code
       </h2>
 
       {error && (
@@ -87,33 +96,92 @@ function App() {
           style={{
             color: "#d32f2f",
             background: "#ffebee",
-            padding: "8px",
-            borderRadius: "6px",
+            padding: "10px 16px",
+            borderRadius: "8px",
+            marginBottom: "18px",
+            fontWeight: 500,
+            boxShadow: "0 2px 8px rgba(211,47,47,0.08)",
           }}
         >
           {error}
         </p>
       )}
 
-      <div style={{ marginBottom: "24px", display: "flex", gap: "12px" }}>
+      <form
+        style={{
+          display: "flex",
+          gap: "16px",
+          marginBottom: "32px",
+          flexWrap: "wrap",
+          alignItems: "center",
+          background: "#fff",
+          padding: "18px",
+          borderRadius: "10px",
+          boxShadow: "0 2px 8px rgba(25,118,210,0.04)",
+        }}
+        onSubmit={e => { e.preventDefault(); handleAdd(); }}
+      >
         <input
           type="text"
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
-          placeholder="Nhập tên mới..."
+          placeholder="Tên thiếu nhi"
           style={{
-            flex: 1,
-            padding: "10px",
+            flex: "2 1 180px",
+            padding: "12px",
             borderRadius: "6px",
             border: "1px solid #bdbdbd",
             fontSize: "16px",
+            background: "#f8fafc",
+            transition: "border 0.2s",
+          }}
+        />
+        <input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          style={{
+            flex: "1 1 120px",
+            padding: "12px",
+            borderRadius: "6px",
+            border: "1px solid #bdbdbd",
+            fontSize: "16px",
+            background: "#f8fafc",
+          }}
+        />
+        <input
+          type="text"
+          value={telephone}
+          onChange={(e) => setTelephone(e.target.value)}
+          placeholder="Số điện thoại"
+          style={{
+            flex: "1 1 140px",
+            padding: "12px",
+            borderRadius: "6px",
+            border: "1px solid #bdbdbd",
+            fontSize: "16px",
+            background: "#f8fafc",
+          }}
+        />
+        <input
+          type="text"
+          value={managerName}
+          onChange={(e) => setManagerName(e.target.value)}
+          placeholder="Tên Giáo Lý Viên"
+          style={{
+            flex: "1 1 140px",
+            padding: "12px",
+            borderRadius: "6px",
+            border: "1px solid #bdbdbd",
+            fontSize: "16px",
+            background: "#f8fafc",
           }}
         />
         <button
-          onClick={handleAdd}
+          type="submit"
           disabled={loading}
           style={{
-            padding: "10px 20px",
+            padding: "12px 28px",
             borderRadius: "6px",
             border: "none",
             background: loading ? "#90caf9" : "#1976d2",
@@ -121,62 +189,77 @@ function App() {
             fontWeight: "bold",
             cursor: loading ? "not-allowed" : "pointer",
             fontSize: "16px",
+            boxShadow: "0 2px 8px rgba(25,118,210,0.08)",
             transition: "background 0.2s",
           }}
         >
           {loading ? "Đang thêm..." : "Thêm"}
         </button>
-      </div>
+      </form>
 
       {rows.length > 0 ? (
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            background: "#fafafa",
-            borderRadius: "8px",
-            overflow: "hidden",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-          }}
-        >
-          <thead>
-            <tr style={{ background: "#1976d2", color: "#fff" }}>
-              <th style={{ padding: "12px" }}>ID</th>
-              <th style={{ padding: "12px" }}>Tên</th>
-              <th style={{ padding: "12px" }}>QR Code</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={row.id} style={{ borderBottom: "1px solid #e0e0e0" }}>
-                <td style={{ padding: "10px", textAlign: "center" }}>
-                  {row.id}
-                </td>
-                <td style={{ padding: "10px", textAlign: "center" }}>
-                  {row.name}
-                </td>
-                <td style={{ padding: "10px", textAlign: "center" }}>
-                  {row.qr_code_img && (
-                    <img
-                      src={row.qr_code_img}
-                      alt="QR"
-                      width="80"
-                      style={{
-                        border: "1px solid #e0e0e0",
-                        borderRadius: "4px",
-                        background: "#fff",
-                        padding: "4px",
-                      }}
-                    />
-                  )}
-                </td>
+        <div style={{ overflowX: "auto" }}>
+          <table
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              background: "#fff",
+              borderRadius: "10px",
+              overflow: "hidden",
+              boxShadow: "0 2px 8px rgba(25,118,210,0.04)",
+            }}
+          >
+            <thead>
+              <tr style={{ background: "#1976d2", color: "#fff" }}>
+                <th style={{ padding: "14px", fontWeight: 600 }}>ID</th>
+                <th style={{ padding: "14px", fontWeight: 600 }}>Tên</th>
+                <th style={{ padding: "14px", fontWeight: 600 }}>Ngày sinh</th>
+                <th style={{ padding: "14px", fontWeight: 600 }}>SĐT</th>
+                <th style={{ padding: "14px", fontWeight: 600 }}>Giáo Lý Viên</th>
+                <th style={{ padding: "14px", fontWeight: 600 }}>QR Code</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr
+                  key={row.id}
+                  style={{
+                    borderBottom: "1px solid #e0e0e0",
+                    background: "#f8fafc",
+                    transition: "background 0.2s",
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.background = "#e3f2fd"}
+                  onMouseLeave={e => e.currentTarget.style.background = "#f8fafc"}
+                >
+                  <td style={{ padding: "12px", textAlign: "center" }}>{row.id}</td>
+                  <td style={{ padding: "12px", textAlign: "center" }}>{row.name}</td>
+                  <td style={{ padding: "12px", textAlign: "center" }}>{row.date}</td>
+                  <td style={{ padding: "12px", textAlign: "center" }}>{row.telephone}</td>
+                  <td style={{ padding: "12px", textAlign: "center" }}>{row.manager_name}</td>
+                  <td style={{ padding: "12px", textAlign: "center" }}>
+                    {row.qr_code_img && (
+                      <img
+                        src={row.qr_code_img}
+                        alt="QR"
+                        width="80"
+                        style={{
+                          border: "1px solid #e0e0e0",
+                          borderRadius: "4px",
+                          background: "#fff",
+                          padding: "4px",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                        }}
+                      />
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
         !error && (
-          <p style={{ textAlign: "center", color: "#757575" }}>
+          <p style={{ textAlign: "center", color: "#757575", marginTop: "32px" }}>
             Đang tải dữ liệu...
           </p>
         )

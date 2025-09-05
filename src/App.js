@@ -77,6 +77,8 @@ function App() {
         borderRadius: "18px",
         boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
         fontFamily: "Segoe UI, Arial, sans-serif",
+        width: "100%", // Thêm dòng này
+        boxSizing: "border-box", // Thêm dòng này
       }}
     >
       <h2
@@ -118,6 +120,8 @@ function App() {
           padding: "18px",
           borderRadius: "10px",
           boxShadow: "0 2px 8px rgba(25,118,210,0.04)",
+          width: "100%", // Thêm dòng này
+          boxSizing: "border-box", // Thêm dòng này
         }}
         onSubmit={e => { e.preventDefault(); handleAdd(); }}
       >
@@ -128,12 +132,15 @@ function App() {
           placeholder="Tên thiếu nhi"
           style={{
             flex: "2 1 180px",
+            minWidth: "120px", // Thêm dòng này
             padding: "12px",
             borderRadius: "6px",
             border: "1px solid #bdbdbd",
             fontSize: "16px",
             background: "#f8fafc",
             transition: "border 0.2s",
+            width: "100%", // Thêm dòng này
+            boxSizing: "border-box", // Thêm dòng này
           }}
         />
         <input
@@ -147,6 +154,8 @@ function App() {
             border: "1px solid #bdbdbd",
             fontSize: "16px",
             background: "#f8fafc",
+            width: "100%", // Thêm dòng này
+            boxSizing: "border-box", // Thêm dòng này
           }}
         />
         <input
@@ -161,6 +170,8 @@ function App() {
             border: "1px solid #bdbdbd",
             fontSize: "16px",
             background: "#f8fafc",
+            width: "100%", // Thêm dòng này
+            boxSizing: "border-box", // Thêm dòng này
           }}
         />
         <input
@@ -175,6 +186,8 @@ function App() {
             border: "1px solid #bdbdbd",
             fontSize: "16px",
             background: "#f8fafc",
+            width: "100%", // Thêm dòng này
+            boxSizing: "border-box", // Thêm dòng này
           }}
         />
         <button
@@ -207,6 +220,7 @@ function App() {
               borderRadius: "10px",
               overflow: "hidden",
               boxShadow: "0 2px 8px rgba(25,118,210,0.04)",
+              minWidth: "600px", // Thêm dòng này để bảng không bị vỡ trên mobile
             }}
           >
             <thead>

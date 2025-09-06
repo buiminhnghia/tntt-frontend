@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import Login from "./login";
 function App() {
   const [rows, setRows] = useState([]);
   const [error, setError] = useState(null);
@@ -10,6 +10,7 @@ function App() {
   const [telephone, setTelephone] = useState("");
   const [managerName, setManagerName] = useState("");
   const API_BASE = "https://tntt-web.onrender.com"; // backend Render API
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // Lấy dữ liệu ban đầu
   const fetchData = () => {
@@ -32,6 +33,10 @@ function App() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  if (!isLoggedIn) {
+    return <Login onLogin={() => setIsLoggedIn(true)} />;
+  }
 
   // Thêm dữ liệu mới
   const handleAdd = () => {
